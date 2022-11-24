@@ -14,11 +14,24 @@ from freqtrade.strategy import (BooleanParameter, CategoricalParameter, DecimalP
 # --------------------------------
 # Add your lib to import here
 import talib.abstract as ta
+from typing import List
+from freqtrade.optimize.space import Categorical, Dimension, Integer, SKDecimal
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 
 # This class is a sample. Feel free to customize it.
-class GoldenCross1dBTC(IStrategy):
+class GoldenCross5mBTCStopLoss(IStrategy):
+    class HyperOpt:
+        def roi_space() -> List[Dimension]:
+            return [
+                Integer(10, 120, name='roi_t1'),
+                Integer(10, 60, name='roi_t2'),
+                Integer(10, 40, name='roi_t3'),
+                SKDecimal(0.01, 0.04, decimals=3, name='roi_p1'),
+                SKDecimal(0.01, 0.07, decimals=3, name='roi_p2'),
+                SKDecimal(0.01, 0.20, decimals=3, name='roi_p3'),
+            ]
+
     """
     This is a sample strategy to inspire you.
     More information in https://www.freqtrade.io/en/latest/strategy-customization/
@@ -44,7 +57,8 @@ class GoldenCross1dBTC(IStrategy):
 
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi".
-    timeframe = "1d"
+    # Optimal timeframe for the strategy.
+    timeframe = "5m"
     timeframe_mins = timeframe_to_minutes(timeframe)
 #     minimal_roi = {
 #         "0": 0.04,                          # 4% for the first 2 candles
@@ -55,7 +69,9 @@ class GoldenCross1dBTC(IStrategy):
 
     # Optimal stoploss designed for the strategy.
     # This attribute will be overridden if the config file contains "stoploss".
-    stoploss = -0.99
+#     stoploss = -0.05
+    stoploss = -0.05
+
 
     # Trailing stoploss
     trailing_stop = False
@@ -63,8 +79,6 @@ class GoldenCross1dBTC(IStrategy):
     # trailing_stop_positive = 0.01
     # trailing_stop_positive_offset = 0.0  # Disabled / not configured
 
-    # Optimal timeframe for the strategy.
-    timeframe = '1d'
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True

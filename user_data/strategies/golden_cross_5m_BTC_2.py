@@ -18,7 +18,7 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 
 # This class is a sample. Feel free to customize it.
-class GoldenCross1dBTC(IStrategy):
+class GoldenCross5mBTC(IStrategy):
     """
     This is a sample strategy to inspire you.
     More information in https://www.freqtrade.io/en/latest/strategy-customization/
@@ -44,7 +44,8 @@ class GoldenCross1dBTC(IStrategy):
 
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi".
-    timeframe = "1d"
+    # Optimal timeframe for the strategy.
+    timeframe = "5m"
     timeframe_mins = timeframe_to_minutes(timeframe)
 #     minimal_roi = {
 #         "0": 0.04,                          # 4% for the first 2 candles
@@ -63,8 +64,6 @@ class GoldenCross1dBTC(IStrategy):
     # trailing_stop_positive = 0.01
     # trailing_stop_positive_offset = 0.0  # Disabled / not configured
 
-    # Optimal timeframe for the strategy.
-    timeframe = '1d'
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True

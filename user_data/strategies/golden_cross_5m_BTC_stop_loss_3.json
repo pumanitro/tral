@@ -1,0 +1,28 @@
+{
+  "strategy_name": "GoldenCross5mBTCStopLoss",
+  "params": {
+    "stoploss": {
+      "stoploss": -0.026
+    },
+    "trailing": {
+      "trailing_stop": false,
+      "trailing_stop_positive": null,
+      "trailing_stop_positive_offset": 0.0,
+      "trailing_only_offset_is_reached": false
+    },
+    "buy": {
+      "quick_sma_candles": 61,
+      "slow_sma_candles": 150
+    },
+    "sell": {},
+    "protection": {},
+    "roi": {
+      "0": 0.067,
+      "33": 0.052,
+      "55": 0.038,
+      "175": 0
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2022-11-24 15:46:20.238907+00:00"
+}

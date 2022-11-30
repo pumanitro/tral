@@ -6,7 +6,6 @@ import numpy as np  # noqa
 import pandas as pd  # noqa
 from pandas import DataFrame
 from typing import Optional, Union
-from freqtrade.exchange import timeframe_to_minutes
 
 from freqtrade.strategy import (BooleanParameter, CategoricalParameter, DecimalParameter,
                                 IStrategy, IntParameter)
@@ -18,7 +17,7 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 
 # This class is a sample. Feel free to customize it.
-class GoldenCross5mBTCCleanSMA(IStrategy):
+class SampleStrategyHyperOpt(IStrategy):
     """
     This is a sample strategy to inspire you.
     More information in https://www.freqtrade.io/en/latest/strategy-customization/
@@ -44,19 +43,15 @@ class GoldenCross5mBTCCleanSMA(IStrategy):
 
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi".
-    # Optimal timeframe for the strategy.
-    timeframe = "5m"
-    timeframe_mins = timeframe_to_minutes(timeframe)
-#     minimal_roi = {
-#         "0": 0.04,                          # 4% for the first 2 candles
-#         str(timeframe_mins * 2): 0.02,     # 2% after 2 candles
-#         str(timeframe_mins * 3): 0.01,     # 1% After 3 candles
-#     }
-    minimal_roi = { "0": 10000 }
+    minimal_roi = {
+        "60": 0.01,
+        "30": 0.02,
+        "0": 0.04
+    }
 
     # Optimal stoploss designed for the strategy.
     # This attribute will be overridden if the config file contains "stoploss".
-    stoploss = -0.99
+    stoploss = -0.10
 
     # Trailing stoploss
     trailing_stop = False
@@ -64,6 +59,8 @@ class GoldenCross5mBTCCleanSMA(IStrategy):
     # trailing_stop_positive = 0.01
     # trailing_stop_positive_offset = 0.0  # Disabled / not configured
 
+    # Optimal timeframe for the strategy.
+    timeframe = '5m'
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -74,13 +71,13 @@ class GoldenCross5mBTCCleanSMA(IStrategy):
     ignore_roi_if_entry_signal = False
 
     # Hyperoptable parameters
-    quick_sma_candles = IntParameter(1, 1439, default=50, space="buy")
-    # 8640 -> month 5 minutes * 8640 = month minutes
-    slow_sma_candles = IntParameter(2, 1440, default=1440, space="buy")
+    buy_rsi = IntParameter(low=1, high=50, default=30, space='buy', optimize=True, load=True)
+    sell_rsi = IntParameter(low=50, high=100, default=70, space='sell', optimize=True, load=True)
+    short_rsi = IntParameter(low=51, high=100, default=70, space='sell', optimize=True, load=True)
+    exit_short_rsi = IntParameter(low=1, high=50, default=30, space='buy', optimize=True, load=True)
 
     # Number of candles the strategy requires before producing valid signals
-    startup_candle_count: int = slow_sma_candles.value
-    # startup_candle_count: int = 8488
+    startup_candle_count: int = 30
 
     # Optional order type mapping.
     order_types = {
@@ -99,14 +96,16 @@ class GoldenCross5mBTCCleanSMA(IStrategy):
     plot_config = {
         'main_plot': {
             'tema': {},
-            'quick_sma': {'color': 'red'},
-            'slow_sma': {'color': 'green'},
+            'sar': {'color': 'white'},
         },
         'subplots': {
             "MACD": {
                 'macd': {'color': 'blue'},
                 'macdsignal': {'color': 'orange'},
             },
+            "RSI": {
+                'rsi': {'color': 'red'},
+            }
         }
     }
 
@@ -139,7 +138,7 @@ class GoldenCross5mBTCCleanSMA(IStrategy):
         # ------------------------------------
 
         # ADX
-        # dataframe['adx'] = ta.ADX(dataframe)
+        dataframe['adx'] = ta.ADX(dataframe)
 
         # # Plus Directional Indicator / Movement
         # dataframe['plus_dm'] = ta.PLUS_DM(dataframe)
@@ -178,7 +177,7 @@ class GoldenCross5mBTCCleanSMA(IStrategy):
         # dataframe['cci'] = ta.CCI(dataframe)
 
         # RSI
-        # dataframe['rsi'] = ta.RSI(dataframe)
+        dataframe['rsi'] = ta.RSI(dataframe)
 
         # # Inverse Fisher transform on RSI: values [-1.0, 1.0] (https://goo.gl/2JGGoy)
         # rsi = 0.1 * (dataframe['rsi'] - 50)
@@ -193,9 +192,9 @@ class GoldenCross5mBTCCleanSMA(IStrategy):
         # dataframe['slowk'] = stoch['slowk']
 
         # Stochastic Fast
-        # stoch_fast = ta.STOCHF(dataframe)
-        # dataframe['fastd'] = stoch_fast['fastd']
-        # dataframe['fastk'] = stoch_fast['fastk']
+        stoch_fast = ta.STOCHF(dataframe)
+        dataframe['fastd'] = stoch_fast['fastd']
+        dataframe['fastk'] = stoch_fast['fastk']
 
         # # Stochastic RSI
         # Please read https://github.com/freqtrade/freqtrade/issues/2961 before using this.
@@ -205,13 +204,13 @@ class GoldenCross5mBTCCleanSMA(IStrategy):
         # dataframe['fastk_rsi'] = stoch_rsi['fastk']
 
         # MACD
-        # macd = ta.MACD(dataframe)
-        # dataframe['macd'] = macd['macd']
-        # dataframe['macdsignal'] = macd['macdsignal']
-        # dataframe['macdhist'] = macd['macdhist']
+        macd = ta.MACD(dataframe)
+        dataframe['macd'] = macd['macd']
+        dataframe['macdsignal'] = macd['macdsignal']
+        dataframe['macdhist'] = macd['macdhist']
 
         # MFI
-        # dataframe['mfi'] = ta.MFI(dataframe)
+        dataframe['mfi'] = ta.MFI(dataframe)
 
         # # ROC
         # dataframe['roc'] = ta.ROC(dataframe)
@@ -220,17 +219,17 @@ class GoldenCross5mBTCCleanSMA(IStrategy):
         # ------------------------------------
 
         # Bollinger Bands
-        # bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe), window=20, stds=2)
-        # dataframe['bb_lowerband'] = bollinger['lower']
-        # dataframe['bb_middleband'] = bollinger['mid']
-        # dataframe['bb_upperband'] = bollinger['upper']
-        # dataframe["bb_percent"] = (
-        #     (dataframe["close"] - dataframe["bb_lowerband"]) /
-        #     (dataframe["bb_upperband"] - dataframe["bb_lowerband"])
-        # )
-        # dataframe["bb_width"] = (
-        #     (dataframe["bb_upperband"] - dataframe["bb_lowerband"]) / dataframe["bb_middleband"]
-        # )
+        bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe), window=20, stds=2)
+        dataframe['bb_lowerband'] = bollinger['lower']
+        dataframe['bb_middleband'] = bollinger['mid']
+        dataframe['bb_upperband'] = bollinger['upper']
+        dataframe["bb_percent"] = (
+            (dataframe["close"] - dataframe["bb_lowerband"]) /
+            (dataframe["bb_upperband"] - dataframe["bb_lowerband"])
+        )
+        dataframe["bb_width"] = (
+            (dataframe["bb_upperband"] - dataframe["bb_lowerband"]) / dataframe["bb_middleband"]
+        )
 
         # Bollinger Bands - Weighted (EMA based instead of SMA)
         # weighted_bollinger = qtpylib.weighted_bollinger_bands(
@@ -263,21 +262,19 @@ class GoldenCross5mBTCCleanSMA(IStrategy):
         # dataframe['sma21'] = ta.SMA(dataframe, timeperiod=21)
         # dataframe['sma50'] = ta.SMA(dataframe, timeperiod=50)
         # dataframe['sma100'] = ta.SMA(dataframe, timeperiod=100)
-        dataframe['quick_sma'] = ta.SMA(dataframe, timeperiod=self.quick_sma_candles.value)
-        dataframe['slow_sma'] = ta.SMA(dataframe, timeperiod=self.slow_sma_candles.value)
 
         # Parabolic SAR
-        # dataframe['sar'] = ta.SAR(dataframe)
+        dataframe['sar'] = ta.SAR(dataframe)
 
         # TEMA - Triple Exponential Moving Average
-        # dataframe['tema'] = ta.TEMA(dataframe, timeperiod=9)
+        dataframe['tema'] = ta.TEMA(dataframe, timeperiod=9)
 
         # Cycle Indicator
         # ------------------------------------
         # Hilbert Transform Indicator - SineWave
-        # hilbert = ta.HT_SINE(dataframe)
-        # dataframe['htsine'] = hilbert['sine']
-        # dataframe['htleadsine'] = hilbert['leadsine']
+        hilbert = ta.HT_SINE(dataframe)
+        dataframe['htsine'] = hilbert['sine']
+        dataframe['htleadsine'] = hilbert['leadsine']
 
         # Pattern Recognition - Bullish candlestick patterns
         # ------------------------------------
@@ -355,10 +352,23 @@ class GoldenCross5mBTCCleanSMA(IStrategy):
         """
         dataframe.loc[
             (
-                (qtpylib.crossed_above(dataframe['quick_sma'], dataframe['slow_sma'])) &
+                # Signal: RSI crosses above 30
+                (qtpylib.crossed_above(dataframe['rsi'], self.buy_rsi.value)) &
+                (dataframe['tema'] <= dataframe['bb_middleband']) &  # Guard: tema below BB middle
+                (dataframe['tema'] > dataframe['tema'].shift(1)) &  # Guard: tema is raising
                 (dataframe['volume'] > 0)  # Make sure Volume is not 0
             ),
             'enter_long'] = 1
+
+        dataframe.loc[
+            (
+                # Signal: RSI crosses above 70
+                (qtpylib.crossed_above(dataframe['rsi'], self.short_rsi.value)) &
+                (dataframe['tema'] > dataframe['bb_middleband']) &  # Guard: tema above BB middle
+                (dataframe['tema'] < dataframe['tema'].shift(1)) &  # Guard: tema is falling
+                (dataframe['volume'] > 0)  # Make sure Volume is not 0
+            ),
+            'enter_short'] = 1
 
         return dataframe
 
@@ -371,10 +381,24 @@ class GoldenCross5mBTCCleanSMA(IStrategy):
         """
         dataframe.loc[
             (
-                (qtpylib.crossed_below(dataframe['quick_sma'], dataframe['slow_sma'])) &
+                # Signal: RSI crosses above 70
+                (qtpylib.crossed_above(dataframe['rsi'], self.sell_rsi.value)) &
+                (dataframe['tema'] > dataframe['bb_middleband']) &  # Guard: tema above BB middle
+                (dataframe['tema'] < dataframe['tema'].shift(1)) &  # Guard: tema is falling
                 (dataframe['volume'] > 0)  # Make sure Volume is not 0
             ),
 
             'exit_long'] = 1
+
+        dataframe.loc[
+            (
+                # Signal: RSI crosses above 30
+                (qtpylib.crossed_above(dataframe['rsi'], self.exit_short_rsi.value)) &
+                # Guard: tema below BB middle
+                (dataframe['tema'] <= dataframe['bb_middleband']) &
+                (dataframe['tema'] > dataframe['tema'].shift(1)) &  # Guard: tema is raising
+                (dataframe['volume'] > 0)  # Make sure Volume is not 0
+            ),
+            'exit_short'] = 1
 
         return dataframe

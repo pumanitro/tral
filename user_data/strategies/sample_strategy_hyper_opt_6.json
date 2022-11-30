@@ -1,11 +1,14 @@
 {
-  "strategy_name": "GoldenCross5mBTCCleanSMA",
+  "strategy_name": "SampleStrategyHyperOpt",
   "params": {
     "roi": {
-      "0": 10000
+      "0": 0.04,
+      "30": 0.02,
+      "60": 0.01,
+      "1440": 0
     },
     "stoploss": {
-      "stoploss": -0.99
+      "stoploss": -0.1
     },
     "trailing": {
       "trailing_stop": false,
@@ -14,12 +17,15 @@
       "trailing_only_offset_is_reached": false
     },
     "buy": {
-      "quick_sma_candles": 13,
-      "slow_sma_candles": 641
+      "buy_rsi": 33,
+      "exit_short_rsi": 6
     },
-    "sell": {},
+    "sell": {
+      "sell_rsi": 74,
+      "short_rsi": 68
+    },
     "protection": {}
   },
   "ft_stratparam_v": 1,
-  "export_time": "2022-11-29 17:01:03.909225+00:00"
+  "export_time": "2022-11-30 13:34:39.262337+00:00"
 }

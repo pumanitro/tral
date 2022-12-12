@@ -2,13 +2,10 @@
   "strategy_name": "SampleStrategyHyperOpt",
   "params": {
     "roi": {
-      "0": 0.04,
-      "30": 0.02,
-      "60": 0.01,
-      "1440": 0
+      "0": 1
     },
     "stoploss": {
-      "stoploss": -0.1
+      "stoploss": -0.20
     },
     "trailing": {
       "trailing_stop": false,
@@ -18,14 +15,14 @@
     },
     "buy": {
       "buy_rsi": 33,
-      "exit_short_rsi": 6
+      "exit_short_rsi": 19
     },
     "sell": {
-      "sell_rsi": 74,
-      "short_rsi": 68
+      "sell_rsi": 82,
+      "short_rsi": 61
     },
     "protection": {}
   },
   "ft_stratparam_v": 1,
-  "export_time": "2022-11-30 13:34:39.262337+00:00"
+  "export_time": "2022-11-30 15:16:18.495621+00:00"
 }

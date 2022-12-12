@@ -20,4 +20,4 @@ docker-compose run --rm freqtrade plot-profit --strategy GoldenCross1dBTC --expo
     docker-compose run --rm freqtrade backtesting --config user_data/config.json --strategy GoldenCross1dBTC --timerange 20120101-20221115 -i 5m --pairs BTC/USDT
 
 #### Hyperopt
-    docker-compose run --rm freqtrade hyperopt --strategy GoldenCross1dBTC --timerange 20120101-20211123 --spaces buy --hyperopt-loss SharpeHyperOptLoss --min-trades 0
+    docker-compose run --rm freqtrade hyperopt --strategy GoldenCross1dBTC --timerange 20211123-20211123 --spaces buy --hyperopt-loss SharpeHyperOptLoss --min-trades 180

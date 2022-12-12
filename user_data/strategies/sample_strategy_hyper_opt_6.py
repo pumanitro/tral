@@ -44,14 +44,17 @@ class SampleStrategyHyperOpt(IStrategy):
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi".
     minimal_roi = {
-        "60": 0.01,
-        "30": 0.02,
-        "0": 0.04
-    }
+      "0": 0.24,
+      "5": 0.16,
+      "15": 0.12,
+      "30": 0.10,
+      "60": 0.08,
+      "120": 0.06
+    },
 
     # Optimal stoploss designed for the strategy.
     # This attribute will be overridden if the config file contains "stoploss".
-    stoploss = -0.10
+    stoploss = -0.05
 
     # Trailing stoploss
     trailing_stop = False

@@ -1,3 +1,8 @@
+### Documentation
+
+Entire process of looking for perfect alghoritm is documented here:
+https://trello.com/b/jJqOrofY/cryptotrading
+
 ### USEFULL COMMANDS
 
 !! Use Admin privileges everywhere

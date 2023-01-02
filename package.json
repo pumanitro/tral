@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "start": "node dxdy.js"
+  },
+  "dependencies": {
+    "@dydxprotocol/v3-client": "^1.14.0",
+    "web3": "^1.8.1"
+  }
+}

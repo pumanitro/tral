@@ -1,0 +1,31 @@
+{
+  "strategy_name": "ComboV3",
+  "params": {
+    "roi": {
+      "0": 0.05,
+      "20": 0.04,
+      "30": 0.03,
+      "60": 0.01
+    },
+    "stoploss": {
+      "stoploss": -0.3
+    },
+    "trailing": {
+      "trailing_stop": false,
+      "trailing_stop_positive": null,
+      "trailing_stop_positive_offset": 0.0,
+      "trailing_only_offset_is_reached": false
+    },
+    "buy": {
+      "buy_cci": -2,
+      "buy_closedelta": 17,
+      "buy_tail": 25
+    },
+    "sell": {
+      "sell_cci": 687
+    },
+    "protection": {}
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2023-01-16 17:03:39.720753+00:00"
+}

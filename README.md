@@ -7,6 +7,12 @@ https://trello.com/b/jJqOrofY/cryptotrading
 
 !! Use Admin privileges everywhere
 
+#### Freq UI 
+```
+docker compose up -d 
+```
+You can change strategy in docker-compose.yml file
+
 #### Historical data
     docker-compose run --rm freqtrade download-data --pairs BTC/USDT --exchange binance -t 5m --timerange 20120101-
 
